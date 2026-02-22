@@ -1,0 +1,11 @@
+# WAF Bypass Payload MCP Server Dependencies
+# Install with: pip install -r requirements-waf-mcp.txt
+
+# MCP SDK
+mcp[cli]>=1.0.0
+
+# HTTP requests (WAF detection + GitHub fetching)
+requests>=2.31.0
+
+# HTML parsing (GitHub page scraping)
+beautifulsoup4>=4.12.0
