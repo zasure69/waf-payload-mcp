@@ -4,8 +4,9 @@
 # MCP SDK
 mcp[cli]>=1.0.0
 
-# HTTP requests (WAF detection + GitHub fetching)
+# HTTP requests (WAF detection, Google/DuckDuckGo search, blog scraping)
 requests>=2.31.0
 
-# HTML parsing (GitHub page scraping)
+# HTML parsing (blog content extraction, payload extraction)
 beautifulsoup4>=4.12.0
+lxml>=4.9.0
