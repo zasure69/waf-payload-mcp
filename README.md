@@ -24,7 +24,7 @@ Script tự động:
 cd waf-payload-mcp
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements-waf-mcp.txt
+pip install -r requirements.txt
 ```
 
 Thêm vào `~/.gemini/settings.json`:
